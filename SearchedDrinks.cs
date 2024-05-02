@@ -7,16 +7,18 @@ namespace DrinksInfo
     public class SearchedDrinks
     {
         public string connectionString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
-        internal void Read()
+        internal List<DrinkDB> Get()
         {
+            List<DrinkDB> searchedDrinks = new();
             using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
                 string query = "SELECT * FROM SearchedDrinks";
 
-                List<DrinkDB> searchedDrinks = connection.Query<DrinkDB>(query).ToList();
+                searchedDrinks = connection.Query<DrinkDB>(query).ToList();
             }
+            return searchedDrinks;
         }
         internal void Write(DrinkDB drink)
         {

@@ -7,7 +7,7 @@ namespace DrinksInfo
     public class FavoriteDrinks
     {
         public string connectionString = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
-        internal List<DrinkDB> Get()
+        internal List<DrinkDB> Get(int num = 0)
         {
             List<DrinkDB> favDrinks;
             using (var connection = new SqlConnection(connectionString))
@@ -18,7 +18,7 @@ namespace DrinksInfo
 
                 favDrinks = connection.Query<DrinkDB>(query).ToList();
 
-                TableVisualisation.ShowFavoriteDrinks(favDrinks);
+                if (num == 0) TableVisualisation.ShowFavoriteDrinks(favDrinks);
             }
             return favDrinks;
         }
