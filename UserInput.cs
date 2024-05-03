@@ -10,6 +10,7 @@ namespace DrinksInfo
         internal void GetCategoryInput()
         {
             List<Category> categories = drinkService.GetCategories();
+            SearchedDrink();
 
             Console.WriteLine("Enter the id of the Category: ");
             string userInput = Console.ReadLine();
@@ -30,7 +31,7 @@ namespace DrinksInfo
             FavoriteDrinks favoriteDrinks = new();
             List<DrinkDB> favDrinks = new();
             List<Drink> drinks2 = new();
-            if (category == "Favorite Drinks") 
+            if (category == "Favorite Drinks")
             {
                 favDrinks = favoriteDrinks.Get();
                 if (favDrinks.Count == 0)
@@ -62,16 +63,15 @@ namespace DrinksInfo
             drinkDB.Id = userInput;
             drinkDB.Name = drinkDetails.strDrink;
             drinkDB.Category = category;
-            FavoriteDrink(drinkDB);
-
             searchedDrinks.Write(drinkDB);
+            FavoriteDrink(drinkDB);
         }
 
         private void FavoriteDrink(DrinkDB drinkDB, int num = 0)
         {
             FavoriteDrinks favoriteDrinks = new();
             List<DrinkDB> favDrinks = favoriteDrinks.Get(1);
-            foreach(var drink in favDrinks)
+            foreach (var drink in favDrinks)
             {
                 if (drink.Name == drinkDB.Name) num = 1;
             }
@@ -91,11 +91,11 @@ namespace DrinksInfo
                 }
 
                 else
-                    {
-                        Console.WriteLine("Invalid option");
-                        Console.ReadLine();
-                        GetCategoryInput();
-                    }
+                {
+                    Console.WriteLine("Invalid option. Press enter to go back to Category Menu.");
+                    Console.ReadLine();
+                    GetCategoryInput();
+                }
             }
             else
             {
@@ -103,41 +103,64 @@ namespace DrinksInfo
                 Console.WriteLine("1. Delete drink from Favorite drinks");
                 string userInput = Console.ReadLine();
                 if (userInput == "0") GetCategoryInput();
-                else if (userInput == "1") 
+                else if (userInput == "1")
                 {
                     favoriteDrinks.Delete(drinkDB.Id);
                     GetCategoryInput();
                 }
-
-                else 
+                else
                 {
                     Console.WriteLine("Invalid Option");
                     Console.ReadLine();
                     GetCategoryInput();
                 }
             }
-
         }
 
         internal void SearchedDrink()
         {
             SearchedDrinks searchedDrinks = new();
             List<DrinkDB> drinksList = searchedDrinks.Get();
-            string searchedDrink;
+
             string mostSearchedDrink = "";
-            int num = 0;
-            foreach (var drink in drinksList)
+            string mostSearchedDrinkCategory = "";
+            int mostSearchedDrinkCount = 0;
+            for (int i = 0; i < drinksList.Count; i++)
             {
-                searchedDrink = drink.Name;
-                if (num == 0) 
+                string searchedDrink = "";
+                string searchedDrinkCategory = "";
+                int searchedDrinkCount = 0;
+                foreach (var drink in drinksList)
+                {
+                    if (searchedDrink == "")
+                    { 
+                        searchedDrink = drink.Name;
+                        searchedDrinkCategory = drink.Category;
+                    }
+                    if (searchedDrink == mostSearchedDrink) 
+                    {
+                        searchedDrink = "";
+                        searchedDrinkCategory = "";
+                        continue;
+                    }
+                    if (drink.Name == searchedDrink)
+                        searchedDrinkCount++;
+                }
+                if (mostSearchedDrink == "")
                 {
                     mostSearchedDrink = searchedDrink;
-                    num++;
-                    break;
+                    mostSearchedDrinkCount = searchedDrinkCount;
+                    mostSearchedDrinkCategory = searchedDrinkCategory;
                 }
-                if (searchedDrink == mostSearchedDrink) num++;
+                if (searchedDrinkCount > mostSearchedDrinkCount)
+                {
+                    mostSearchedDrink = searchedDrink;
+                    mostSearchedDrinkCount = searchedDrinkCount;
+                    mostSearchedDrinkCategory = searchedDrinkCategory;
+                }
             }
-            
+            Console.WriteLine($"Most Searched Drink: {mostSearchedDrink} from the {mostSearchedDrinkCategory} category");
+            Console.WriteLine($"Searched {mostSearchedDrinkCount} times");
         }
     }
 }
