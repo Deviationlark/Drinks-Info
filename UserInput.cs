@@ -17,6 +17,9 @@ namespace DrinksInfo
 
             while (!Validation.CategoryValidation(categories, userInput))
             {
+                Console.Clear();
+                drinkService.GetCategories();
+                SearchedDrink();
                 Console.WriteLine("Invalid Category.");
                 Console.WriteLine("Enter the id of the Category: ");
                 userInput = Console.ReadLine();
